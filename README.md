@@ -1,64 +1,75 @@
-Follow below steps to see the VMX controls of your processor:
+This repository is a part Assignment 1 Discovering VMX Features for CMPE-283
 
-Step 0: PREREQ
-Create a VM on GCP
-I. Create VM from UI
-II. Export yaml file
-III. Modify yaml file to set it to virtualizable
+Follow these steps to discover the VMX features present in your processor:
 
-STEP 1:
-Create .C file with code to read MSRs and write them to message log
+Step 0: PREREQUISITES
 
-STEP2:
+  To Create a Virtual Machine on GCP:
+    I. In your browser, log in to Google Cloud console
+    II. Create a new project 
+    III. Go to 'Compute Instance' and create a new VM from UI bu clicking on 'Create Instance'. In the create form
+         - Set the Instance name and region fields as suitable
+         - Set the machine configuration options [Series: n2 and Machine Type: n2-standard-2]
+         - In 'Boot Disk' section, click on 'change image', select 'Public Images' tab, select 'Ubuntu' in the Operating System dropdown, click 'Select'
+         - Click on 'Create' button at the bottom
+        A new instance will be created 
 
-// GIT stuff
-git config --global user.name "SakshiKekre"
-git config --global user.email “sakshi.kekre@gmail.com”
-git config --global --list
+  To Update the Virtual Machine for enabling Virtualization
+    I. On your local machine, download the installer for gcloud cli from https://cloud.google.com/sdk/docs/install-sdk
+    II. Unzip the installer and execute the install.sh file in your local terminal
+    III. In a new terminal, execute below command to initialize the gcloud cli 
+            $ gcloud init
+         When prompted, select the appropriate project, region and zone in the same command
+    IV. Export the configuration of the gcloud instance in a yaml file with below command
+          $ gcloud compute instances export instance-1  --destination=export.yaml   --zone=<YourZone>
+    V. Modify yaml file to enable nested virtualization by appending following string at the end of file:
+            advancedMachineFeatures:
+             enableNestedVirtualization: true
 
-ls -al ~/.ssh
-
-ssh-keygen -t ed25519 -C “sakshi.kekre@gmail.com"
-
-
-eval "$(ssh-agent -s)"
->Agent pid 4016
-
-ssh-add ~/.ssh/id_ed25519
-
-cat ~/.ssh/id_ed25519.pub
->ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDF58z35vgdrHFh/RJUweQyX12S/dE8B0t/OJSvTXc/8 sakshi.kekre@gmail.com
-
-$ touch README.md    # To create a README file for the repository
-$ git init           # Initiates an empty git repository
-
-#gcloud compute scp LOCAL_FILE_PATH VM_NAME:~
-
-gcloud compute scp /Users/spartan/Documents/CMPE283_VirtualTechnologies/Assignment1/readMSR.c instance-1:~/CMPE283_Ass1_SKK/readMSR.c 
-
-gcloud compute scp /Users/spartan/Documents/CMPE283_VirtualTechnologies/Assignment1/Makefile instance-1:~/CMPE283_Ass1_SKK/Makefile
-
-$ git add .
-$ git status
-$ git commit -m "First commit"
-$ git remote add origin git@github.com:SakshiKekre/CMPE283.git
-$ git push -u origin master
+  Your cloud instance (virtual machine) is now created and enabled for nested virtualization.
+  
+****************************************************************************************************************************
 
 
-STEP 3:
-// Make and insert
+STEP 1: Connect to the gcloud instance using command
+            $ gcloud compute ssh instance-1
+        It will generate the required key pair for secure shell
 
-$ sudo apt install gcc make
+****************************************************************************************************************************
+  
+STEP2: Create a new directory and clone this GitHub repository in your directory. The readMSR.C file has code to 
+       - read MSR Controls of your VM processor 
+       - write these controls to the kernal log
+       Copy files to repository
 
-$ uname -r
-> 5.4.0-1092-gcp
+****************************************************************************************************************************
 
-$ sudo apt-get install linux-headers-5.4.0-1092-gcp
+STEP 3:Install gcc, make and linux headers using below commands
+
+# Compiler
+$ sudo apt install gcc 
+
+# Build automation tool
+$ sudo apt install make
+
+# Packages for linux kernal headers
+$ sudo apt-get install linux-headers-$(uname -r)
+
+****************************************************************************************************************************
+
+STEP 4: Make the kernal object and insert it in kernal using below commands
 
 $make
-$sudo insmod ./readMSR.ko
-$sudo dmesg
 
+$sudo insmod ./readMSR.ko
+
+****************************************************************************************************************************
+
+STEP 5: As soon as your module is inserted in the kernal, it will print messages to the kernal logs. These logs can be seen using below command.
+          $sudo dmesg
+  
+        An excerpt of these logs from my execution are shown below >
+  
 [23713.330919] readMSR: loading out-of-tree module taints kernel.
 [23713.330957] readMSR: module verification failed: signature and/or required key missing - tainting kernel
 [28002.104024] CMPE 283 Assignment 1 Module Start -- SSK 
