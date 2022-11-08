@@ -21,24 +21,18 @@ Follow these steps to discover the VMX features present in your processor:
         
         
 
-  ## To Update the Virtual Machine for enabling Virtualization
+  ## To Update the Virtual Machine for enabling Virtualization:
   
     1. On your local machine, download the installer for [gcloud cli](https://cloud.google.com/sdk/docs/install-sdk)
     2. Unzip the installer and execute the install.sh file in your local terminal
     3. In a new terminal, execute below command to initialize the gcloud cli 
-        ```
         $ gcloud init
-        ```
        When prompted, select the appropriate project, region and zone in the same command
     4. Export the configuration of the gcloud instance in a yaml file with below command
-       ```
-          $ gcloud compute instances export instance-1  --destination=export.yaml   --zone=<YourZone>
-       ```
+        $ gcloud compute instances export instance-1  --destination=export.yaml   --zone=<YourZone>
     5. Modify yaml file to enable nested virtualization by appending following string at the end of file:
-       ```
        advancedMachineFeatures:
          enableNestedVirtualization: true
-       ```
 
   Your cloud instance (virtual machine) is now created and enabled for nested virtualization.
   
@@ -51,22 +45,25 @@ Connect to the gcloud instance using command
 ```
 $ gcloud compute ssh instance-1
 ```
-It will generate the required key pair for secure shell
+It will generate the required key pair for secure shell.
 
 ****************************************************************************************************************************
   
 # STEP2: 
       
-Create a new directory and clone this GitHub repository in your directory. The readMSR.C file has code to 
+Create a new directory and clone this GitHub repository in your directory. 
+
+The readMSR.C file has code to: 
    - read MSR Controls of your VM processor 
    - write these controls to the kernal log
-Copy files to repository
+
+The Makefile has the recipe to make the object files from source files.
 
 ****************************************************************************************************************************
 
 # STEP 3:
 
-Install gcc, make and linux headers using below commands
+Install gcc, make and linux headers using below commands:
 
 - Compiler
 ```
