@@ -33,6 +33,8 @@ Follow these steps to discover the VMX features present in your processor:
     5. Modify yaml file to enable nested virtualization by appending following string at the end of file:
        advancedMachineFeatures:
          enableNestedVirtualization: true
+    6. Execute below command to update the VM with nested virtualization capability 
+        $ gcloud compute instances update-from-file instance-1  --source=export.yaml   --most-disruptive-allowed-action=RESTART --zone=<YourZone>
 
   Your cloud instance (virtual machine) is now created and enabled for nested virtualization.
   
@@ -45,7 +47,7 @@ Connect to the gcloud instance using command
 ```
 $ gcloud compute ssh instance-1
 ```
-It will generate the required key pair for secure shell.
+It will prompt and generate the required key pair for secure shell.
 
 ****************************************************************************************************************************
   
@@ -94,7 +96,7 @@ $sudo insmod ./readMSR.ko
 ****************************************************************************************************************************
 
 # STEP 5: 
-As soon as your module is inserted in the kernal, it will print messages to the kernal logs. These logs can be seen using below command.
+As soon as your module is inserted in the kernal, it will print messages to the system logs. Use below command to see these logs
 
 ```
 $sudo dmesg
