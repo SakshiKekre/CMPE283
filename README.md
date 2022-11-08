@@ -1,78 +1,111 @@
 This repository is a part Assignment 1: Discovering VMX Features for CMPE-283
+
 Performed by: Sakshi Kekre (sakshisanjay.kekre@sjsu.edu)
 
 ****************************************************************************************************************************
 
 Follow these steps to discover the VMX features present in your processor:
 
-#Step 0: PREREQUISITES
+# Step 0: PREREQUISITES
 
-  To Create a Virtual Machine on GCP:
-    I. In your browser, log in to Google Cloud console
-    II. Create a new project 
-    III. Go to 'Compute Instance' and create a new VM from UI bu clicking on 'Create Instance'. In the create form
+  ## To Create a Virtual Machine on GCP:
+  
+    1. In your browser, log in to Google Cloud console
+    2. Create a new project 
+    3. Go to 'Compute Instance' and create a new VM from UI bu clicking on 'Create Instance'. In the create form
          - Set the Instance name and region fields as suitable
          - Set the machine configuration options [Series: n2 and Machine Type: n2-standard-2]
          - In 'Boot Disk' section, click on 'change image', select 'Public Images' tab, select 'Ubuntu' in the Operating System dropdown, click 'Select'
          - Click on 'Create' button at the bottom
         A new instance will be created 
+        
+        
 
-  To Update the Virtual Machine for enabling Virtualization
-    I. On your local machine, download the installer for gcloud cli from https://cloud.google.com/sdk/docs/install-sdk
-    II. Unzip the installer and execute the install.sh file in your local terminal
-    III. In a new terminal, execute below command to initialize the gcloud cli 
-            $ gcloud init
-         When prompted, select the appropriate project, region and zone in the same command
-    IV. Export the configuration of the gcloud instance in a yaml file with below command
+  ## To Update the Virtual Machine for enabling Virtualization
+  
+    1. On your local machine, download the installer for [gcloud cli](https://cloud.google.com/sdk/docs/install-sdk)
+    2. Unzip the installer and execute the install.sh file in your local terminal
+    3. In a new terminal, execute below command to initialize the gcloud cli 
+        ```
+        $ gcloud init
+        ```
+       When prompted, select the appropriate project, region and zone in the same command
+    4. Export the configuration of the gcloud instance in a yaml file with below command
+       ```
           $ gcloud compute instances export instance-1  --destination=export.yaml   --zone=<YourZone>
-    V. Modify yaml file to enable nested virtualization by appending following string at the end of file:
-            advancedMachineFeatures:
-             enableNestedVirtualization: true
+       ```
+    5. Modify yaml file to enable nested virtualization by appending following string at the end of file:
+       ```
+       advancedMachineFeatures:
+         enableNestedVirtualization: true
+       ```
 
   Your cloud instance (virtual machine) is now created and enabled for nested virtualization.
   
 ****************************************************************************************************************************
 
 
-#STEP 1: Connect to the gcloud instance using command
-            $ gcloud compute ssh instance-1
-        It will generate the required key pair for secure shell
+# STEP 1: 
+       
+Connect to the gcloud instance using command
+```
+$ gcloud compute ssh instance-1
+```
+It will generate the required key pair for secure shell
 
 ****************************************************************************************************************************
   
-#STEP2: Create a new directory and clone this GitHub repository in your directory. The readMSR.C file has code to 
-       - read MSR Controls of your VM processor 
-       - write these controls to the kernal log
-       Copy files to repository
+# STEP2: 
+      
+Create a new directory and clone this GitHub repository in your directory. The readMSR.C file has code to 
+   - read MSR Controls of your VM processor 
+   - write these controls to the kernal log
+Copy files to repository
 
 ****************************************************************************************************************************
 
-#STEP 3:Install gcc, make and linux headers using below commands
+# STEP 3:
 
-Compiler
+Install gcc, make and linux headers using below commands
+
+- Compiler
+```
 $ sudo apt install gcc 
+```
 
-Build automation tool
+- Build automation tool
+```
 $ sudo apt install make
+```
 
-Packages for linux kernal headers
+- Packages for linux kernal headers
+```
 $ sudo apt-get install linux-headers-$(uname -r)
+```
 
 ****************************************************************************************************************************
 
-#STEP 4: Make the kernal object and insert it in kernal using below commands
+# STEP 4: 
+Make the kernal object and insert it in kernal using below commands
 
+```
 $make
 
 $sudo insmod ./readMSR.ko
+```
 
 ****************************************************************************************************************************
 
-#STEP 5: As soon as your module is inserted in the kernal, it will print messages to the kernal logs. These logs can be seen using below command.
-          $sudo dmesg
-  
-        An excerpt of these logs from my execution are shown below >
-  
+# STEP 5: 
+As soon as your module is inserted in the kernal, it will print messages to the kernal logs. These logs can be seen using below command.
+
+```
+$sudo dmesg
+```
+
+An excerpt of these logs from my execution are shown below
+
+```
 [23713.330919] readMSR: loading out-of-tree module taints kernel.
 [23713.330957] readMSR: module verification failed: signature and/or required key missing - tainting kernel
 [28002.104024] CMPE 283 Assignment 1 Module Start -- SSK 
@@ -167,3 +200,4 @@ $sudo insmod ./readMSR.ko
 [28002.104076]   Load CET state: Can set=No, Can clear=Yes
 [28002.104077]   Load guest IA32_LBR_CTL: Can set=No, Can clear=Yes
 [28002.104077]   Load PKRS: Can set=No, Can clear=Yes
+```
