@@ -1,8 +1,11 @@
-This repository is a part Assignment 1 Discovering VMX Features for CMPE-283
+This repository is a part Assignment 1: Discovering VMX Features for CMPE-283
+Performed by: Sakshi Kekre (sakshisanjay.kekre@sjsu.edu)
+
+****************************************************************************************************************************
 
 Follow these steps to discover the VMX features present in your processor:
 
-Step 0: PREREQUISITES
+#Step 0: PREREQUISITES
 
   To Create a Virtual Machine on GCP:
     I. In your browser, log in to Google Cloud console
@@ -31,33 +34,33 @@ Step 0: PREREQUISITES
 ****************************************************************************************************************************
 
 
-STEP 1: Connect to the gcloud instance using command
+#STEP 1: Connect to the gcloud instance using command
             $ gcloud compute ssh instance-1
         It will generate the required key pair for secure shell
 
 ****************************************************************************************************************************
   
-STEP2: Create a new directory and clone this GitHub repository in your directory. The readMSR.C file has code to 
+#STEP2: Create a new directory and clone this GitHub repository in your directory. The readMSR.C file has code to 
        - read MSR Controls of your VM processor 
        - write these controls to the kernal log
        Copy files to repository
 
 ****************************************************************************************************************************
 
-STEP 3:Install gcc, make and linux headers using below commands
+#STEP 3:Install gcc, make and linux headers using below commands
 
-# Compiler
+Compiler
 $ sudo apt install gcc 
 
-# Build automation tool
+Build automation tool
 $ sudo apt install make
 
-# Packages for linux kernal headers
+Packages for linux kernal headers
 $ sudo apt-get install linux-headers-$(uname -r)
 
 ****************************************************************************************************************************
 
-STEP 4: Make the kernal object and insert it in kernal using below commands
+#STEP 4: Make the kernal object and insert it in kernal using below commands
 
 $make
 
@@ -65,7 +68,7 @@ $sudo insmod ./readMSR.ko
 
 ****************************************************************************************************************************
 
-STEP 5: As soon as your module is inserted in the kernal, it will print messages to the kernal logs. These logs can be seen using below command.
+#STEP 5: As soon as your module is inserted in the kernal, it will print messages to the kernal logs. These logs can be seen using below command.
           $sudo dmesg
   
         An excerpt of these logs from my execution are shown below >
